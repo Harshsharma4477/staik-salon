@@ -1,37 +1,212 @@
-<section class="account-section">
-    <h2>Owner Account</h2>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Staik Salon - Owner Panel</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
 
-```
-<form method="post" action="/owner/account" class="form">
+<body>
 
-    <label>
-        New Username
-        <input
-            name="username"
-            type="text"
-            placeholder="New username"
-            minlength="3"
-            value="{{ owner.username }}"
-            required
-        >
-    </label>
+<header>
+    <div class="brand">STAIK SALON • OWNER</div>
+    <a href="/owner/logout">Logout</a>
+</header>
 
-    <label>
-        New Password
-        <input
-            name="password"
-            type="password"
-            placeholder="New password (minimum 8 characters)"
-            minlength="8"
-            required
-        >
-    </label>
+<section>
 
-    <button type="submit" class="btn">
-        Change Login
-    </button>
+<h1>Owner Dashboard</h1>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="notice">{{ messages[0] }}</div>
+{% endif %}
+{% endwith %}
+
+
+<!-- BOOKINGS -->
+
+<h2>Client Bookings</h2>
+
+<div class="tablewrap">
+<table>
+
+<tr>
+<th>ID</th>
+<th>Date</th>
+<th>Time</th>
+<th>Customer</th>
+<th>Phone</th>
+<th>Service</th>
+<th>Price</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+{% for b in bookings %}
+
+<tr>
+
+<td>#{{ b.id }}</td>
+<td>{{ b.booking_date }}</td>
+<td>{{ b.booking_time }}</td>
+<td>{{ b.customer_name }}</td>
+<td>{{ b.phone }}</td>
+<td>{{ b.service }}</td>
+<td>₹{{ b.price }}</td>
+<td>{{ b.status }}</td>
+
+<td>
+
+{% if b.status != "cancelled" %}
+
+<form class="inline"
+      method="post"
+      action="/owner/booking/{{ b.id }}/confirmed">
+
+<button type="submit">Confirm</button>
 
 </form>
-```
+
+<form class="inline"
+      method="post"
+      action="/owner/booking/{{ b.id }}/cancelled">
+
+<button type="submit">Cancel</button>
+
+</form>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% else %}
+
+<tr>
+<td colspan="9">No bookings yet.</td>
+</tr>
+
+{% endfor %}
+
+</table>
+</div>
+
+
+<!-- SERVICES -->
+
+<h2>Manage Services</h2>
+
+<form method="post" action="/owner/service/add">
+
+<input
+name="name"
+placeholder="Service name"
+required
+>
+
+<input
+name="price"
+type="number"
+min="1"
+placeholder="Price"
+required
+>
+
+<button type="submit">Add Service</button>
+
+</form>
+
+
+{% for s in services %}
+
+<div class="card">
+
+<form method="post"
+      action="/owner/service/{{ s.id }}/update">
+
+<input
+name="name"
+value="{{ s.name }}"
+required
+>
+
+<input
+name="price"
+type="number"
+min="1"
+value="{{ s.price }}"
+required
+>
+
+<button type="submit">Save Changes</button>
+
+</form>
+
+
+<form method="post"
+      action="/owner/service/{{ s.id }}/delete"
+      onsubmit="return confirm('Delete this service?');">
+
+<button type="submit">Delete</button>
+
+</form>
+
+</div>
+
+{% endfor %}
+
+
+<!-- OWNER ACCOUNT -->
+
+<h2>Owner Account</h2>
+
+<p>
+Current username:
+<strong>{{ owner.username }}</strong>
+</p>
+
+<form method="post" action="/owner/account">
+
+<input
+name="username"
+placeholder="New username"
+minlength="3"
+required
+>
+
+<input
+name="password"
+type="password"
+placeholder="New password"
+minlength="8"
+required
+>
+
+<button type="submit">
+Change Login
+</button>
+
+</form>
+
+
+<!-- GOOGLE MAPS -->
+
+<h2>Salon Location</h2>
+
+<p>{{ salon_address }}</p>
+
+<a
+class="btn"
+href="/directions"
+target="_blank"
+>
+📍 Open Google Maps
+</a>
 
 </section>
+
+</body>
+</html>
