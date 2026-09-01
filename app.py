@@ -6,9 +6,7 @@ import os
 import secrets
 from datetime import date
 
-
 app = Flask(__name__)
-
 
 # =========================================================
 # SETTINGS
@@ -64,7 +62,6 @@ def db():
 
 
 def init_db():
-
     con = db()
 
     con.executescript("""
@@ -100,10 +97,7 @@ def init_db():
 
     if count == 0:
         con.executemany(
-            """
-            INSERT INTO services(name, price)
-            VALUES (?, ?)
-            """,
+            "INSERT INTO services(name, price) VALUES(?, ?)",
             [
                 ("Haircut", 200),
                 ("Hair Styling", 300),
@@ -143,7 +137,6 @@ def init_db():
 
 @app.route("/")
 def home():
-
     con = db()
 
     services = con.execute(
@@ -166,7 +159,6 @@ def home():
 
 @app.route("/slots")
 def slots():
-
     selected_date = request.args.get(
         "date",
         ""
@@ -236,7 +228,6 @@ def book():
         service_id = 0
 
     # Validation
-
     if not all([
         booking_date,
         booking_time,
@@ -261,7 +252,6 @@ def book():
     con = db()
 
     # Check service
-
     service = con.execute(
         "SELECT id FROM services WHERE id=?",
         (service_id,)
@@ -273,9 +263,7 @@ def book():
         return redirect(url_for("home") + "#booking")
 
     # Save booking
-
     try:
-
         con.execute(
             """
             INSERT INTO bookings(
@@ -303,7 +291,6 @@ def book():
         ).fetchone()[0]
 
     except sqlite3.IntegrityError:
-
         con.close()
 
         flash("Sorry, this time slot is already booked.")
@@ -359,7 +346,6 @@ def owner_login():
                 password
             )
         ):
-
             session.clear()
             session["owner"] = True
 
@@ -683,9 +669,7 @@ def owner_account():
         """,
         (
             new_username,
-            generate_password_hash(
-                new_password
-            )
+            generate_password_hash(new_password)
         )
     )
 
@@ -725,9 +709,7 @@ def directions():
 
 init_db()
 
-
 if __name__ == "__main__":
-
     app.run(
         host="0.0.0.0",
         port=int(
