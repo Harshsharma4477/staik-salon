@@ -1,321 +1,37 @@
-```html
-<!doctype html>
-<html lang="en">
+<section class="account-section">
+    <h2>Owner Account</h2>
 
-<head>
+```
+<form method="post" action="/owner/account" class="form">
 
-<meta charset="utf-8">
+    <label>
+        New Username
+        <input
+            name="username"
+            type="text"
+            placeholder="New username"
+            minlength="3"
+            value="{{ owner.username }}"
+            required
+        >
+    </label>
 
-<meta
-name="viewport"
-content="width=device-width,initial-scale=1"
->
+    <label>
+        New Password
+        <input
+            name="password"
+            type="password"
+            placeholder="New password (minimum 8 characters)"
+            minlength="8"
+            required
+        >
+    </label>
 
-<title>Staik Salon Owner</title>
-
-<link
-rel="stylesheet"
-href="/static/style.css"
->
-
-</head>
-
-<body>
-
-<header>
-
-<div class="brand">
-STAIK SALON • OWNER
-</div>
-
-<div>
-
-<a href="/">
-Website
-</a>
-
-&nbsp;
-
-<a href="/owner/logout">
-Logout
-</a>
-
-</div>
-
-</header>
-
-
-<section>
-
-
-<!-- OWNER ACCOUNT -->
-
-<h2>🔐 Owner Account</h2>
-
-<form
-class="serviceadd"
-method="post"
-action="/owner/account"
->
-
-<input
-name="username"
-value="{{ owner.username }}"
-placeholder="New username"
-minlength="3"
-required
->
-
-<input
-name="password"
-type="password"
-placeholder="New password"
-minlength="8"
-required
->
-
-<button type="submit">
-Change Login
-</button>
+    <button type="submit" class="btn">
+        Change Login
+    </button>
 
 </form>
-
-<p>
-Username या password बदलने के बाद आपको दोबारा login करना होगा.
-</p>
-
-
-<!-- BOOKINGS -->
-
-<h2>📅 Bookings</h2>
-
-<div class="tablewrap">
-
-<table>
-
-<tr>
-
-<th>ID</th>
-<th>Date</th>
-<th>Time</th>
-<th>Customer</th>
-<th>Phone</th>
-<th>Service</th>
-<th>Price</th>
-<th>Status</th>
-<th>Action</th>
-
-</tr>
-
-
-{% for b in bookings %}
-
-<tr>
-
-<td>
-#{{ b.id }}
-</td>
-
-<td>
-{{ b.booking_date }}
-</td>
-
-<td>
-{{ b.booking_time }}
-</td>
-
-<td>
-{{ b.customer_name }}
-</td>
-
-<td>
-{{ b.phone }}
-</td>
-
-<td>
-{{ b.service }}
-</td>
-
-<td>
-₹{{ b.price }}
-</td>
-
-<td>
-{{ b.status }}
-</td>
-
-<td>
-
-{% if b.status != 'cancelled' %}
-
-<form
-class="inline"
-method="post"
-action="/owner/booking/{{ b.id }}/confirmed"
->
-
-<button type="submit">
-Confirm
-</button>
-
-</form>
-
-
-<form
-class="inline"
-method="post"
-action="/owner/booking/{{ b.id }}/cancelled"
->
-
-<button type="submit">
-Cancel
-</button>
-
-</form>
-
-{% endif %}
-
-</td>
-
-</tr>
-
-
-{% else %}
-
-<tr>
-
-<td colspan="9">
-No bookings yet.
-</td>
-
-</tr>
-
-{% endfor %}
-
-</table>
-
-</div>
-
-
-<!-- ADD SERVICE -->
-
-<h2>➕ Add New Service</h2>
-
-<form
-class="serviceadd"
-method="post"
-action="/owner/service/add"
->
-
-<input
-name="name"
-placeholder="Service name"
-required
->
-
-<input
-name="price"
-type="number"
-min="1"
-placeholder="Price"
-required
->
-
-<button type="submit">
-Add Service
-</button>
-
-</form>
-
-
-<!-- SERVICES -->
-
-<h2>💰 Services & Rates</h2>
-
-<div class="grid">
-
-{% for s in services %}
-
-<div class="card">
-
-<form
-method="post"
-action="/owner/service/{{ s.id }}/update"
->
-
-<label>
-Service Name
-</label>
-
-<input
-name="name"
-value="{{ s.name }}"
-required
->
-
-
-<label>
-Price
-</label>
-
-<input
-name="price"
-type="number"
-min="1"
-value="{{ s.price }}"
-required
->
-
-
-<button type="submit">
-💾 Save Rate
-</button>
-
-</form>
-
-
-<form
-method="post"
-action="/owner/service/{{ s.id }}/delete"
-style="margin-top:10px"
->
-
-<button type="submit">
-🗑️ Delete
-</button>
-
-</form>
-
-</div>
-
-{% endfor %}
-
-</div>
-
-
-<!-- GOOGLE MAP -->
-
-<h2>📍 Salon Location</h2>
-
-<p>
-Customers को salon तक पहुंचाने के लिए Google Maps button:
-</p>
-
-<a
-href="/directions"
-target="_blank"
->
-
-<button type="button">
-📍 Get Directions
-</button>
-
-</a>
-
+```
 
 </section>
-
-</body>
-
-</html>
-```
