@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Staik Salon Dashboard</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><header><div class="brand">STAIK SALON • OWNER</div><a href="/owner/logout">Logout</a></header>
+<section><h2>Bookings</h2><div class="tablewrap"><table><tr><th>ID</th><th>Date</th><th>Time</th><th>Customer</th><th>Phone</th><th>Service</th><th>Status</th><th>Action</th></tr>
+{% for b in bookings %}<tr><td>#{{b.id}}</td><td>{{b.booking_date}}</td><td>{{b.booking_time}}</td><td>{{b.customer_name}}</td><td>{{b.phone}}</td><td>{{b.service}}</td><td>{{b.status}}</td><td>
+{% if b.status != 'cancelled' %}<form class="inline" method="post" action="/owner/booking/{{b.id}}/confirmed"><button>Confirm</button></form>{% endif %}
+{% if b.status != 'cancelled' %}<form class="inline" method="post" action="/owner/booking/{{b.id}}/cancelled"><button>Cancel</button></form>{% endif %}</td></tr>{% else %}<tr><td colspan="8">No bookings yet.</td></tr>{% endfor %}</table></div>
+<h2>Services</h2><form class="serviceadd" method="post" action="/owner/service/add"><input name="name" placeholder="Service name" required><input name="price" type="number" min="1" placeholder="Price" required><button>Add</button></form>
+<div class="grid">{% for s in services %}<div class="card"><b>{{s.name}}</b><p>₹{{s.price}}</p><form method="post" action="/owner/service/{{s.id}}/delete"><button>Delete</button></form></div>{% endfor %}</div>
+</section></body></html>
