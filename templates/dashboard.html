@@ -3,263 +3,319 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Staik Salon Dashboard</title>
+<meta charset="utf-8">
 
-    <link rel="stylesheet" href="/static/style.css">
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1"
+>
+
+<title>Staik Salon Owner</title>
+
+<link
+rel="stylesheet"
+href="/static/style.css"
+>
+
 </head>
 
 <body>
 
 <header>
-    <div class="brand">STAIK SALON • OWNER</div>
-    <a href="/owner/logout">Logout</a>
+
+<div class="brand">
+STAIK SALON • OWNER
+</div>
+
+<div>
+
+<a href="/">
+Website
+</a>
+
+&nbsp;
+
+<a href="/owner/logout">
+Logout
+</a>
+
+</div>
+
 </header>
+
 
 <section>
 
-    <!-- BOOKINGS -->
-    <h2>Bookings</h2>
 
-    <div class="tablewrap">
+<!-- OWNER ACCOUNT -->
 
-        <table>
+<h2>🔐 Owner Account</h2>
 
-            <tr>
-                <th>ID</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Customer</th>
-                <th>Phone</th>
-                <th>Service</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
+<form
+class="serviceadd"
+method="post"
+action="/owner/account"
+>
 
-            {% for b in bookings %}
+<input
+name="username"
+value="{{ owner.username }}"
+placeholder="New username"
+minlength="3"
+required
+>
 
-            <tr>
+<input
+name="password"
+type="password"
+placeholder="New password"
+minlength="8"
+required
+>
 
-                <td>#{{b.id}}</td>
+<button type="submit">
+Change Login
+</button>
 
-                <td>{{b.booking_date}}</td>
+</form>
 
-                <td>{{b.booking_time}}</td>
+<p>
+Username या password बदलने के बाद आपको दोबारा login करना होगा.
+</p>
 
-                <td>{{b.customer_name}}</td>
 
-                <td>{{b.phone}}</td>
+<!-- BOOKINGS -->
 
-                <td>{{b.service}}</td>
+<h2>📅 Bookings</h2>
 
-                <td>{{b.status}}</td>
+<div class="tablewrap">
 
-                <td>
+<table>
 
-                    {% if b.status != 'cancelled' %}
+<tr>
 
-                    <form class="inline"
-                          method="post"
-                          action="/owner/booking/{{b.id}}/confirmed">
+<th>ID</th>
+<th>Date</th>
+<th>Time</th>
+<th>Customer</th>
+<th>Phone</th>
+<th>Service</th>
+<th>Price</th>
+<th>Status</th>
+<th>Action</th>
 
-                        <button type="submit">
-                            Confirm
-                        </button>
+</tr>
 
-                    </form>
 
-                    <form class="inline"
-                          method="post"
-                          action="/owner/booking/{{b.id}}/cancelled">
+{% for b in bookings %}
 
-                        <button type="submit">
-                            Cancel
-                        </button>
+<tr>
 
-                    </form>
+<td>
+#{{ b.id }}
+</td>
 
-                    {% endif %}
+<td>
+{{ b.booking_date }}
+</td>
 
-                </td>
+<td>
+{{ b.booking_time }}
+</td>
 
-            </tr>
+<td>
+{{ b.customer_name }}
+</td>
 
-            {% else %}
+<td>
+{{ b.phone }}
+</td>
 
-            <tr>
-                <td colspan="8">
-                    No bookings yet.
-                </td>
-            </tr>
+<td>
+{{ b.service }}
+</td>
 
-            {% endfor %}
+<td>
+₹{{ b.price }}
+</td>
 
-        </table>
+<td>
+{{ b.status }}
+</td>
 
-    </div>
+<td>
 
+{% if b.status != 'cancelled' %}
 
-    <!-- SERVICES -->
+<form
+class="inline"
+method="post"
+action="/owner/booking/{{ b.id }}/confirmed"
+>
 
-    <h2>Services & Rates</h2>
+<button type="submit">
+Confirm
+</button>
 
+</form>
 
-    <!-- ADD SERVICE -->
 
-    <form class="serviceadd"
-          method="post"
-          action="/owner/service/add">
+<form
+class="inline"
+method="post"
+action="/owner/booking/{{ b.id }}/cancelled"
+>
 
-        <input
-            name="name"
-            placeholder="Service name"
-            required
-        >
+<button type="submit">
+Cancel
+</button>
 
-        <input
-            name="price"
-            type="number"
-            min="1"
-            placeholder="Price ₹"
-            required
-        >
+</form>
 
-        <button type="submit">
-            + Add Service
-        </button>
+{% endif %}
 
-    </form>
+</td>
 
+</tr>
 
-    <!-- SERVICE LIST -->
 
-    <div class="grid">
+{% else %}
 
-        {% for s in services %}
+<tr>
 
-        <div class="card">
+<td colspan="9">
+No bookings yet.
+</td>
 
-            <!-- CURRENT SERVICE -->
+</tr>
 
-            <div class="service-view">
+{% endfor %}
 
-                <h3>{{s.name}}</h3>
+</table>
 
-                <p>
-                    ₹{{s.price}}
-                </p>
+</div>
 
-                <button
-                    type="button"
-                    onclick="showEdit({{s.id}})">
 
-                    ✏️ Edit Rate
+<!-- ADD SERVICE -->
 
-                </button>
+<h2>➕ Add New Service</h2>
 
-                <form
-                    method="post"
-                    action="/owner/service/{{s.id}}/delete"
-                    onsubmit="return confirm('Delete this service?');">
+<form
+class="serviceadd"
+method="post"
+action="/owner/service/add"
+>
 
-                    <button type="submit">
-                        🗑️ Delete
-                    </button>
+<input
+name="name"
+placeholder="Service name"
+required
+>
 
-                </form>
+<input
+name="price"
+type="number"
+min="1"
+placeholder="Price"
+required
+>
 
-            </div>
+<button type="submit">
+Add Service
+</button>
 
+</form>
 
-            <!-- EDIT SERVICE -->
 
-            <div
-                id="edit-{{s.id}}"
-                class="service-edit"
-                style="display:none;">
+<!-- SERVICES -->
 
-                <h3>Edit Service</h3>
+<h2>💰 Services & Rates</h2>
 
-                <form
-                    method="post"
-                    action="/owner/service/{{s.id}}/edit">
+<div class="grid">
 
-                    <input
-                        name="name"
-                        value="{{s.name}}"
-                        placeholder="Service name"
-                        required
-                    >
+{% for s in services %}
 
-                    <input
-                        name="price"
-                        type="number"
-                        min="1"
-                        value="{{s.price}}"
-                        placeholder="Price ₹"
-                        required
-                    >
+<div class="card">
 
-                    <button type="submit">
-                        💾 Save Changes
-                    </button>
+<form
+method="post"
+action="/owner/service/{{ s.id }}/update"
+>
 
-                    <button
-                        type="button"
-                        onclick="hideEdit({{s.id}})">
+<label>
+Service Name
+</label>
 
-                        Cancel
+<input
+name="name"
+value="{{ s.name }}"
+required
+>
 
-                    </button>
 
-                </form>
+<label>
+Price
+</label>
 
-            </div>
+<input
+name="price"
+type="number"
+min="1"
+value="{{ s.price }}"
+required
+>
 
-        </div>
 
-        {% endfor %}
+<button type="submit">
+💾 Save Rate
+</button>
 
-    </div>
+</form>
+
+
+<form
+method="post"
+action="/owner/service/{{ s.id }}/delete"
+style="margin-top:10px"
+>
+
+<button type="submit">
+🗑️ Delete
+</button>
+
+</form>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+
+<!-- GOOGLE MAP -->
+
+<h2>📍 Salon Location</h2>
+
+<p>
+Customers को salon तक पहुंचाने के लिए Google Maps button:
+</p>
+
+<a
+href="/directions"
+target="_blank"
+>
+
+<button type="button">
+📍 Get Directions
+</button>
+
+</a>
+
 
 </section>
 
-
-<script>
-
-function showEdit(id) {
-
-    const view = document.querySelector(
-        "#edit-" + id
-    );
-
-    if (view) {
-
-        view.style.display = "block";
-
-    }
-
-}
-
-
-function hideEdit(id) {
-
-    const edit = document.querySelector(
-        "#edit-" + id
-    );
-
-    if (edit) {
-
-        edit.style.display = "none";
-
-    }
-
-}
-
-</script>
-
 </body>
+
 </html>
 ```

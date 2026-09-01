@@ -1,34 +1,297 @@
 <!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Staik Salon</title><link rel="stylesheet" href="/static/style.css">
-</head><body>
-<header><div class="brand">STAIK SALON</div><a href="#booking">Book Appointment</a></header>
-<section class="hero"><div><p class="eyebrow">BEAUTY • STYLE • CARE</p><h1>Look Good. Feel Great.</h1>
-<p>Professional salon services with easy online appointment booking.</p><a class="btn" href="#booking">Book Now</a></div></section>
-<section><h2>Our Services</h2><div class="grid">
-{% for s in services %}<div class="card"><h3>{{s.name}}</h3><p>Professional service</p><strong>₹{{s.price}}</strong></div>{% endfor %}
-</div></section>
-<section id="booking"><h2>Book Your Appointment</h2>
-{% with messages=get_flashed_messages() %}{% if messages %}<div class="notice">{{messages[0]}}</div>{% endif %}{% endwith %}
-<form class="form" method="post" action="/book">
-<label>Service<select name="service_id" required>{% for s in services %}<option value="{{s.id}}">{{s.name}} — ₹{{s.price}}</option>{% endfor %}</select></label>
-<label>Date<input id="date" type="date" name="booking_date" min="{{today}}" value="{{today}}" required></label>
-<label>Available Time</label><div id="slots" class="slots"></div><input type="hidden" id="booking_time" name="booking_time" required>
-<label>Name<input name="customer_name" placeholder="Your name" required></label>
-<label>Mobile<input name="phone" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" required></label>
-<button class="btn" type="submit">Confirm Booking</button>
-</form></section>
-<footer>© 2026 Staik Salon · <a href="/owner">Owner Login</a></footer>
-<script>
-const date=document.querySelector("#date"), slots=document.querySelector("#slots"), hidden=document.querySelector("#booking_time");
-async function loadSlots(){
- const data=await fetch("/slots?date="+encodeURIComponent(date.value)).then(r=>r.json());
- slots.innerHTML="";
- data.forEach(x=>{const b=document.createElement("button");b.type="button";b.textContent=x.time;b.className="slot "+(x.available?"":"disabled");
- if(x.available)b.onclick=()=>{document.querySelectorAll(".slot").forEach(z=>z.classList.remove("selected"));b.classList.add("selected");hidden.value=x.time};
- else b.disabled=true; slots.appendChild(b)});
- hidden.value="";
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Staik Salon</title>
+
+<link rel="stylesheet" href="/static/style.css">
+
+<style>
+.map-btn{
+    display:inline-block;
+    margin-top:12px;
+    padding:12px 18px;
+    background:#111;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
 }
-date.addEventListener("change",loadSlots);loadSlots();
-</script></body></html>
+
+.map-btn:hover{
+    opacity:.85;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <div class="brand">STAIK SALON</div>
+
+```
+<a href="#booking">Book Appointment</a>
+```
+
+</header>
+
+<section class="hero">
+    <div>
+
+```
+    <p class="eyebrow">BEAUTY • STYLE • CARE</p>
+
+    <h1>Look Good. Feel Great.</h1>
+
+    <p>
+        Professional salon services with easy online appointment booking.
+    </p>
+
+    <a class="btn" href="#booking">Book Now</a>
+
+    <!-- Google Maps -->
+    <a
+        class="map-btn"
+        href="https://www.google.com/maps/search/?api=1&query=Staik+Salon+Bhopal"
+        target="_blank"
+        rel="noopener"
+    >
+        📍 Get Directions
+    </a>
+
+</div>
+```
+
+</section>
+
+<section>
+
+```
+<h2>Our Services</h2>
+
+<div class="grid">
+
+    {% for s in services %}
+
+    <div class="card">
+
+        <h3>{{s.name}}</h3>
+
+        <p>Professional service</p>
+
+        <strong>₹{{s.price}}</strong>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+```
+
+</section>
+
+<section id="booking">
+
+```
+<h2>Book Your Appointment</h2>
+
+
+{% with messages=get_flashed_messages() %}
+
+    {% if messages %}
+
+    <div class="notice">
+        {{messages[0]}}
+    </div>
+
+    {% endif %}
+
+{% endwith %}
+
+
+<form class="form" method="post" action="/book">
+
+
+    <label>
+        Service
+
+        <select name="service_id" required>
+
+            {% for s in services %}
+
+            <option value="{{s.id}}">
+                {{s.name}} — ₹{{s.price}}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+    </label>
+
+
+    <label>
+        Date
+
+        <input
+            id="date"
+            type="date"
+            name="booking_date"
+            min="{{today}}"
+            value="{{today}}"
+            required
+        >
+
+    </label>
+
+
+    <label>Available Time</label>
+
+    <div id="slots" class="slots"></div>
+
+    <input
+        type="hidden"
+        id="booking_time"
+        name="booking_time"
+        required
+    >
+
+
+    <label>
+        Name
+
+        <input
+            name="customer_name"
+            placeholder="Your name"
+            required
+        >
+
+    </label>
+
+
+    <label>
+        Mobile
+
+        <input
+            name="phone"
+            inputmode="numeric"
+            maxlength="10"
+            placeholder="10-digit mobile number"
+            required
+        >
+
+    </label>
+
+
+    <button class="btn" type="submit">
+        Confirm Booking
+    </button>
+
+</form>
+```
+
+</section>
+
+<footer>
+
+```
+© 2026 Staik Salon ·
+
+<a href="/owner">
+    Owner Login
+</a>
+```
+
+</footer>
+
+<script>
+
+const date =
+    document.querySelector("#date");
+
+const slots =
+    document.querySelector("#slots");
+
+const hidden =
+    document.querySelector("#booking_time");
+
+
+async function loadSlots(){
+
+    try{
+
+        const response =
+            await fetch(
+                "/slots?date=" +
+                encodeURIComponent(date.value)
+            );
+
+        const data =
+            await response.json();
+
+        slots.innerHTML = "";
+
+        data.forEach(x => {
+
+            const b =
+                document.createElement("button");
+
+            b.type = "button";
+
+            b.textContent = x.time;
+
+            b.className =
+                "slot " +
+                (x.available ? "" : "disabled");
+
+
+            if(x.available){
+
+                b.onclick = () => {
+
+                    document
+                        .querySelectorAll(".slot")
+                        .forEach(z =>
+                            z.classList.remove("selected")
+                        );
+
+                    b.classList.add("selected");
+
+                    hidden.value = x.time;
+
+                };
+
+            }else{
+
+                b.disabled = true;
+
+            }
+
+            slots.appendChild(b);
+
+        });
+
+    }catch(error){
+
+        slots.innerHTML =
+            "<p>Unable to load time slots.</p>";
+
+    }
+
+}
+
+
+date.addEventListener(
+    "change",
+    loadSlots
+);
+
+loadSlots();
+
+</script>
+
+</body>
+</html>
