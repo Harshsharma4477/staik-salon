@@ -8,20 +8,15 @@ from datetime import date
 
 app = Flask(__name__)
 
-# Secret key should be set in Render Environment Variables.
-# Generate one with:
-# python -c "import secrets; print(secrets.token_hex(32))"
 app.secret_key = os.environ.get("SECRET_KEY")
 
 if not app.secret_key:
-    # Local development fallback only.
     app.secret_key = secrets.token_hex(32)
 
 DB = os.environ.get("DB_PATH", "staik_salon.db")
 
-# Owner login is controlled through Environment Variables.
-OWNER_USERNAME = os.environ.get("OWNER_USERNAME", "admin")
-OWNER_PASSWORD_HASH = os.environ.get("OWNER_PASSWORD_HASH", "")
+OWNER_USERNAME = os.environ.get("OWNER_USERNAME", "harsh47")
+OWNER_PASSWORD_HASH = os.environ.get("OWNER_PASSWORD_HASH", "harsh@1234")
 
 TIMES = [
     "10:00 AM",
@@ -84,9 +79,11 @@ def init_db():
 @app.route("/")
 def home():
     con = db()
+
     services = con.execute(
         "SELECT * FROM services ORDER BY id"
     ).fetchall()
+
     con.close()
 
     return render_template(
@@ -140,7 +137,6 @@ def book():
     except ValueError:
         sid = 0
 
-    # Basic validation
     if not all([d, t, name, phone]):
         flash("Please enter all booking details.")
         return redirect(url_for("home") + "#booking")
@@ -153,14 +149,12 @@ def book():
         flash("Please select a valid time slot.")
         return redirect(url_for("home") + "#booking")
 
-    # Prevent booking dates in the past.
     if d < date.today().isoformat():
         flash("Please select today or a future date.")
         return redirect(url_for("home") + "#booking")
 
     con = db()
 
-    # Check that selected service exists.
     service = con.execute(
         "SELECT id FROM services WHERE id=?",
         (sid,)
@@ -183,7 +177,7 @@ def book():
             )
             VALUES(?,?,?,?,?)
             """,
-            (sid, t and d, t, name, phone)
+            (sid, d, t, name, phone)
         )
 
         con.commit()
@@ -216,20 +210,24 @@ def owner_required():
 def owner_login():
 
     if request.method == "POST":
+
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
-        # Do not allow login if the password hash has not been configured.
         if not OWNER_PASSWORD_HASH:
             flash("Owner login is not configured.")
             return render_template("login.html")
 
         if (
             username == OWNER_USERNAME
-            and check_password_hash(OWNER_PASSWORD_HASH, password)
+            and check_password_hash(
+                OWNER_PASSWORD_HASH,
+                password
+            )
         ):
             session.clear()
             session["owner"] = True
+
             return redirect(url_for("dashboard"))
 
         flash("Wrong username or password.")
@@ -298,6 +296,10 @@ def booking_action(bid, action):
     return redirect(url_for("dashboard"))
 
 
+# ==============================
+# ADD NEW SERVICE
+# ==============================
+
 @app.route("/owner/service/add", methods=["POST"])
 def service_add():
 
@@ -312,6 +314,7 @@ def service_add():
         price = 0
 
     if name and price > 0:
+
         con = db()
 
         con.execute(
@@ -322,8 +325,64 @@ def service_add():
         con.commit()
         con.close()
 
+        flash("Service added successfully.")
+
     return redirect(url_for("dashboard"))
 
+
+# ==============================
+# EDIT SERVICE / CHANGE RATE
+# ==============================
+
+@app.route("/owner/service/<int:sid>/edit", methods=["POST"])
+def service_edit(sid):
+
+    if not owner_required():
+        return redirect(url_for("owner_login"))
+
+    name = request.form.get("name", "").strip()
+
+    try:
+        price = int(request.form.get("price", "0"))
+    except ValueError:
+        price = 0
+
+    if not name or price <= 0:
+        flash("Please enter a valid service name and price.")
+        return redirect(url_for("dashboard"))
+
+    con = db()
+
+    service = con.execute(
+        "SELECT id FROM services WHERE id=?",
+        (sid,)
+    ).fetchone()
+
+    if not service:
+        con.close()
+        flash("Service not found.")
+        return redirect(url_for("dashboard"))
+
+    con.execute(
+        """
+        UPDATE services
+        SET name=?, price=?
+        WHERE id=?
+        """,
+        (name, price, sid)
+    )
+
+    con.commit()
+    con.close()
+
+    flash("Service updated successfully.")
+
+    return redirect(url_for("dashboard"))
+
+
+# ==============================
+# DELETE SERVICE
+# ==============================
 
 @app.route("/owner/service/<int:sid>/delete", methods=["POST"])
 def service_delete(sid):
@@ -341,6 +400,8 @@ def service_delete(sid):
     con.commit()
     con.close()
 
+    flash("Service deleted successfully.")
+
     return redirect(url_for("dashboard"))
 
 
@@ -354,3 +415,5 @@ if __name__ == "__main__":
         debug=False
     )
 ```
+
+
