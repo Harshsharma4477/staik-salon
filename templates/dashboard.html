@@ -1,9 +1,265 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Staik Salon Dashboard</title><link rel="stylesheet" href="/static/style.css"></head>
-<body><header><div class="brand">STAIK SALON • OWNER</div><a href="/owner/logout">Logout</a></header>
-<section><h2>Bookings</h2><div class="tablewrap"><table><tr><th>ID</th><th>Date</th><th>Time</th><th>Customer</th><th>Phone</th><th>Service</th><th>Status</th><th>Action</th></tr>
-{% for b in bookings %}<tr><td>#{{b.id}}</td><td>{{b.booking_date}}</td><td>{{b.booking_time}}</td><td>{{b.customer_name}}</td><td>{{b.phone}}</td><td>{{b.service}}</td><td>{{b.status}}</td><td>
-{% if b.status != 'cancelled' %}<form class="inline" method="post" action="/owner/booking/{{b.id}}/confirmed"><button>Confirm</button></form>{% endif %}
-{% if b.status != 'cancelled' %}<form class="inline" method="post" action="/owner/booking/{{b.id}}/cancelled"><button>Cancel</button></form>{% endif %}</td></tr>{% else %}<tr><td colspan="8">No bookings yet.</td></tr>{% endfor %}</table></div>
-<h2>Services</h2><form class="serviceadd" method="post" action="/owner/service/add"><input name="name" placeholder="Service name" required><input name="price" type="number" min="1" placeholder="Price" required><button>Add</button></form>
-<div class="grid">{% for s in services %}<div class="card"><b>{{s.name}}</b><p>₹{{s.price}}</p><form method="post" action="/owner/service/{{s.id}}/delete"><button>Delete</button></form></div>{% endfor %}</div>
-</section></body></html>
+```html
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title>Staik Salon Dashboard</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="brand">STAIK SALON • OWNER</div>
+    <a href="/owner/logout">Logout</a>
+</header>
+
+<section>
+
+    <!-- BOOKINGS -->
+    <h2>Bookings</h2>
+
+    <div class="tablewrap">
+
+        <table>
+
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Service</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+            {% for b in bookings %}
+
+            <tr>
+
+                <td>#{{b.id}}</td>
+
+                <td>{{b.booking_date}}</td>
+
+                <td>{{b.booking_time}}</td>
+
+                <td>{{b.customer_name}}</td>
+
+                <td>{{b.phone}}</td>
+
+                <td>{{b.service}}</td>
+
+                <td>{{b.status}}</td>
+
+                <td>
+
+                    {% if b.status != 'cancelled' %}
+
+                    <form class="inline"
+                          method="post"
+                          action="/owner/booking/{{b.id}}/confirmed">
+
+                        <button type="submit">
+                            Confirm
+                        </button>
+
+                    </form>
+
+                    <form class="inline"
+                          method="post"
+                          action="/owner/booking/{{b.id}}/cancelled">
+
+                        <button type="submit">
+                            Cancel
+                        </button>
+
+                    </form>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% else %}
+
+            <tr>
+                <td colspan="8">
+                    No bookings yet.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+
+    <!-- SERVICES -->
+
+    <h2>Services & Rates</h2>
+
+
+    <!-- ADD SERVICE -->
+
+    <form class="serviceadd"
+          method="post"
+          action="/owner/service/add">
+
+        <input
+            name="name"
+            placeholder="Service name"
+            required
+        >
+
+        <input
+            name="price"
+            type="number"
+            min="1"
+            placeholder="Price ₹"
+            required
+        >
+
+        <button type="submit">
+            + Add Service
+        </button>
+
+    </form>
+
+
+    <!-- SERVICE LIST -->
+
+    <div class="grid">
+
+        {% for s in services %}
+
+        <div class="card">
+
+            <!-- CURRENT SERVICE -->
+
+            <div class="service-view">
+
+                <h3>{{s.name}}</h3>
+
+                <p>
+                    ₹{{s.price}}
+                </p>
+
+                <button
+                    type="button"
+                    onclick="showEdit({{s.id}})">
+
+                    ✏️ Edit Rate
+
+                </button>
+
+                <form
+                    method="post"
+                    action="/owner/service/{{s.id}}/delete"
+                    onsubmit="return confirm('Delete this service?');">
+
+                    <button type="submit">
+                        🗑️ Delete
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- EDIT SERVICE -->
+
+            <div
+                id="edit-{{s.id}}"
+                class="service-edit"
+                style="display:none;">
+
+                <h3>Edit Service</h3>
+
+                <form
+                    method="post"
+                    action="/owner/service/{{s.id}}/edit">
+
+                    <input
+                        name="name"
+                        value="{{s.name}}"
+                        placeholder="Service name"
+                        required
+                    >
+
+                    <input
+                        name="price"
+                        type="number"
+                        min="1"
+                        value="{{s.price}}"
+                        placeholder="Price ₹"
+                        required
+                    >
+
+                    <button type="submit">
+                        💾 Save Changes
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="hideEdit({{s.id}})">
+
+                        Cancel
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<script>
+
+function showEdit(id) {
+
+    const view = document.querySelector(
+        "#edit-" + id
+    );
+
+    if (view) {
+
+        view.style.display = "block";
+
+    }
+
+}
+
+
+function hideEdit(id) {
+
+    const edit = document.querySelector(
+        "#edit-" + id
+    );
+
+    if (edit) {
+
+        edit.style.display = "none";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
+```
