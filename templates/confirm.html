@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Confirm Booking - {{ salon_name }}</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .confirm-box {
+            max-width: 650px;
+            margin: 60px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+        }
+
+        .confirm-box h1 {
+            margin-bottom: 25px;
+        }
+
+        .booking-info {
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .confirm-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .back-btn {
+            background: #ddd;
+            color: #222;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="confirm-box">
+
+    <h1>Confirm Booking</h1>
+
+    <div class="booking-info">
+
+        <p>
+            <strong>Customer:</strong>
+            {{ booking['customer_name'] }}
+        </p>
+
+        <p>
+            <strong>Phone:</strong>
+            {{ booking['phone'] }}
+        </p>
+
+        <p>
+            <strong>Service:</strong>
+            {{ booking['service_name'] or 'Salon Service' }}
+        </p>
+
+        <p>
+            <strong>Date:</strong>
+            {{ booking['booking_date'] }}
+        </p>
+
+        <p>
+            <strong>Time:</strong>
+            {{ booking['booking_time'] }}
+        </p>
+
+        {% if booking['notes'] %}
+        <p>
+            <strong>Notes:</strong>
+            {{ booking['notes'] }}
+        </p>
+        {% endif %}
+
+    </div>
+
+    <form method="POST"
+          action="{{ url_for('manage_booking',
+                             booking_id=booking['id'],
+                             action='confirm') }}">
+
+        <input type="hidden"
+               name="csrf_token"
+               value="{{ csrf_token() }}">
+
+        <button type="submit"
+                class="btn confirm-btn">
+            Confirm Booking
+        </button>
+
+        <a href="{{ url_for('dashboard') }}#bookings"
+           class="btn back-btn">
+            Back
+        </a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

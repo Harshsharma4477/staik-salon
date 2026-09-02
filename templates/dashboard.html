@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - {{ salon_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<style>
+    .dashboard {
+        padding: 35px 0 60px;
+        background: #f7f7f8;
+        min-height: 100vh;
+    }
+
+    .dashboard-header {
+        background: #111;
+        color: white;
+        padding: 22px 0;
+    }
+
+    .dashboard-header-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .dashboard-title {
+        margin: 0;
+        font-size: 28px;
+    }
+
+    .dashboard-subtitle {
+        margin: 5px 0 0;
+        color: #bbb;
+    }
+
+    .logout-btn {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 8px;
+        background: white;
+        color: #111;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .dashboard-section {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        margin-top: 25px;
+        box-shadow: 0 8px 30px rgba(0,0,0,.06);
+    }
+
+    .dashboard-section h2 {
+        margin-top: 0;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+    }
+
+    .stat-card {
+        padding: 22px;
+        border-radius: 14px;
+        background: #fafafa;
+        border: 1px solid #eee;
+    }
+
+    .stat-card strong {
+        display: block;
+        font-size: 30px;
+        margin-top: 8px;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 25px;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+
+    .dashboard-table th,
+    .dashboard-table td {
+        padding: 13px 10px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        vertical-align: top;
+    }
+
+    .dashboard-table th {
+        background: #fafafa;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: capitalize;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-confirmed {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .status-cancelled {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    .small-btn {
+        border: 0;
+        border-radius: 7px;
+        padding: 7px 10px;
+        cursor: pointer;
+        font-weight: 600;
+        background: #111;
+        color: white;
+    }
+
+    .danger-btn {
+        background: #b42318;
+    }
+
+    .success-btn {
+        background: #087443;
+    }
+
+    .muted-btn {
+        background: #666;
+    }
+
+    .dashboard-form {
+        display: grid;
+        gap: 12px;
+    }
+
+    .dashboard-form input,
+    .dashboard-form textarea,
+    .dashboard-form select {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font: inherit;
+    }
+
+    .dashboard-form textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    .form-two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .item-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .manage-item {
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 14px;
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .manage-item-title {
+        font-weight: 700;
+    }
+
+    .manage-item-info {
+        color: #666;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .permission-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .permission {
+        padding: 12px;
+        border-radius: 8px;
+        background: #f5f5f5;
+        font-size: 13px;
+    }
+
+    .permission.yes {
+        background: #e7f6ec;
+        color: #146c2e;
+    }
+
+    @media (max-width: 900px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .permission-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dashboard-header-inner {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-two {
+            grid-template-columns: 1fr;
+        }
+
+        .permission-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-section {
+            padding: 17px;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<header class="dashboard-header">
+    <div class="container dashboard-header-inner">
+        <div>
+            <h1 class="dashboard-title">{{ salon_name }} — Owner Dashboard</h1>
+            <p class="dashboard-subtitle">
+                Logged in as <strong>{{ owner['username'] }}</strong>
+            </p>
+        </div>
+
+    <div class="action-row">
+        <a href="{{ url_for('owner_products') }}" class="logout-btn">🛍️ Products</a>
+        <a href="{{ url_for('owner_orders') }}" class="logout-btn">📦 Orders ({{ stats.orders }})</a>
+        <a href="{{ url_for('owner_logout') }}" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+</header>
+
+<main class="dashboard">
+    <div class="container">
+
+    <!-- STATS -->
+    <section class="dashboard-section">
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <span>Total Bookings</span>
+                <strong>{{ stats.total }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Pending</span>
+                <strong>{{ stats.pending }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Confirmed</span>
+                <strong>{{ stats.confirmed }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Cancelled</span>
+                <strong>{{ stats.cancelled }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Shop Orders</span>
+                <strong>{{ stats.orders }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span>Pending Orders</span>
+                <strong>{{ stats.pending_orders }}</strong>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- BOOKINGS -->
+    {% if owner['can_manage_bookings'] %}
+    <section class="dashboard-section">
+        <h2>📅 Bookings</h2>
+
+        {% if bookings %}
+        <div class="table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for booking in bookings %}
+                    <tr>
+                        <td>
+                            <strong>{{ booking['customer_name'] }}</strong>
+
+                            {% if booking['notes'] %}
+                            <br>
+                            <small>{{ booking['notes'] }}</small>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ booking['phone'] }}</td>
+
+                        <td>
+                            {{ booking['service_name'] or 'Deleted service' }}
+                        </td>
+
+                        <td>{{ booking['booking_date'] }}</td>
+
+                        <td>{{ booking['booking_time'] }}</td>
+
+                        <td>
+                            <span class="status status-{{ booking['status'] }}">
+                                {{ booking['status'] }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <div class="action-row">
+
+                                {% if booking['status'] == 'pending' %}
+<a href="{{ url_for('confirm_booking_page', booking_id=booking['id']) }}"
+   class="small-btn success-btn"
+   style="text-decoration:none;display:inline-block;">
+    Confirm
+</a>
+{% endif %}
+
+<form method="POST"
+      action="{{ url_for('delete_booking', booking_id=booking['id']) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button class="small-btn muted-btn">
+        Delete
+    </button>
+</form>
+
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <p>No bookings yet.</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+
+    <div class="dashboard-grid">
+
+        <!-- SERVICES -->
+        {% if owner['can_manage_services'] %}
+        <section class="dashboard-section">
+
+            <h2>💇 Services</h2>
+
+            <form method="POST"
+                  action="{{ url_for('add_service') }}"
+                  class="dashboard-form">
+
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <input name="name"
+                       placeholder="Service name"
+                       required>
+
+                <textarea name="description"
+                          placeholder="Description"></textarea>
+
+                <div class="form-two">
+                    <input type="number"
+                           name="price"
+                           min="0"
+                           step="0.01"
+                           placeholder="Price"
+                           required>
+
+                    <input type="number"
+                           name="duration"
+                           min="1"
+                           placeholder="Duration in minutes"
+                           required>
+                </div>
+
+                <button class="primary-button">
+                    Add Service
+                </button>
+            </form>
+
+
+            <div class="item-list">
+
+                {% for service in services %}
+                <div class="manage-item">
+
+                    <div>
+                        <div class="manage-item-title">
+                            {{ service['name'] }}
+                        </div>
+
+                        <div class="manage-item-info">
+                            ₹{{ service['price'] }}
+                            · {{ service['duration'] }} min
+                            ·
+                            {% if service['active'] %}
+                                Active
+                            {% else %}
+                                Hidden
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+
+                        <form method="POST"
+                              action="{{ url_for('toggle_service', service_id=service['id']) }}">
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <button class="small-btn">
+                                {% if service['active'] %}
+                                    Hide
+                                {% else %}
+                                    Show
+                                {% endif %}
+                            </button>
+                        </form>
+
+                        <form method="POST"
+                              action="{{ url_for('delete_service', service_id=service['id']) }}">
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <button class="small-btn danger-btn">
+                                Delete
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </section>
+        {% endif %}
+
+
+        <!-- PROMOTIONS -->
+        {% if owner['can_manage_promotions'] %}
+        <section class="dashboard-section">
+
+            <h2>🎁 Promotions</h2>
+
+            <form method="POST"
+                  action="{{ url_for('add_promotion') }}"
+                  class="dashboard-form">
+
+                <input type="hidden"
+                       name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <input name="title"
+                       placeholder="Promotion title"
+                       required>
+
+                <textarea name="description"
+                          placeholder="Promotion description"></textarea>
+
+                <input name="discount"
+                       placeholder="Discount e.g. 20% OFF">
+
+                <button class="primary-button">
+                    Add Promotion
+                </button>
+            </form>
+
+
+            <div class="item-list">
+
+                {% for promotion in promotions %}
+                <div class="manage-item">
+
+                    <div>
+                        <div class="manage-item-title">
+                            {{ promotion['title'] }}
+                        </div>
+
+                        <div class="manage-item-info">
+                            {{ promotion['discount'] or 'Special offer' }}
+                            ·
+                            {% if promotion['active'] %}
+                                Active
+                            {% else %}
+                                Hidden
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="action-row">
+
+                        <form method="POST"
+                              action="{{ url_for('toggle_promotion', promotion_id=promotion['id']) }}">
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <button class="small-btn">
+                                {% if promotion['active'] %}
+                                    Hide
+                                {% else %}
+                                    Show
+                                {% endif %}
+                            </button>
+                        </form>
+
+                        <form method="POST"
+                              action="{{ url_for('delete_promotion', promotion_id=promotion['id']) }}">
+                            <input type="hidden"
+                                   name="csrf_token"
+                                   value="{{ csrf_token() }}">
+
+                            <button class="small-btn danger-btn">
+                                Delete
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </section>
+        {% endif %}
+
+    </div>
+
+
+    <!-- SETTINGS -->
+    {% if owner['can_manage_account'] %}
+    <section class="dashboard-section">
+
+        <h2>⚙️ Salon Settings</h2>
+
+        <form method="POST"
+              action="{{ url_for('update_settings') }}"
+              class="dashboard-form">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <div class="form-two">
+
+                <input name="salon_name"
+                       value="{{ salon_name }}"
+                       placeholder="Salon name"
+                       required>
+
+                <input name="phone"
+                       value="{{ phone }}"
+                       placeholder="Phone number">
+
+            </div>
+
+            <input name="address"
+                   value="{{ address }}"
+                   placeholder="Salon address">
+
+            <input name="opening_hours"
+                   value="{{ opening_hours }}"
+                   placeholder="Opening hours">
+
+            <textarea name="about"
+                      placeholder="About salon">{{ about }}</textarea>
+
+            <button class="primary-button">
+                Save Salon Settings
+            </button>
+
+        </form>
+
+    </section>
+    {% endif %}
+
+
+    <!-- ACCOUNT -->
+    {% if owner['can_manage_account'] %}
+    <section class="dashboard-section">
+
+        <h2>🔐 Owner Account</h2>
+
+        <form method="POST"
+              action="{{ url_for('update_account') }}"
+              class="dashboard-form">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <input name="username"
+                   value="{{ owner['username'] }}"
+                   placeholder="Username"
+                   required>
+
+            <input type="password"
+                   name="current_password"
+                   placeholder="Current password"
+                   required>
+
+            <div class="form-two">
+
+                <input type="password"
+                       name="new_password"
+                       placeholder="New password">
+
+                <input type="password"
+                       name="confirm_password"
+                       placeholder="Confirm new password">
+
+            </div>
+
+            <button class="primary-button">
+                Update Account
+            </button>
+
+        </form>
+
+    </section>
+    {% endif %}
+
+
+    <!-- PERMISSIONS -->
+    <section class="dashboard-section">
+
+        <h2>🛡️ Permissions</h2>
+
+        <div class="permission-grid">
+
+            <div class="permission {% if owner['can_manage_bookings'] %}yes{% endif %}">
+                Bookings:
+                {% if owner['can_manage_bookings'] %}Allowed{% else %}Disabled{% endif %}
+            </div>
+
+            <div class="permission {% if owner['can_manage_services'] %}yes{% endif %}">
+                Services:
+                {% if owner['can_manage_services'] %}Allowed{% else %}Disabled{% endif %}
+            </div>
+
+            <div class="permission {% if owner['can_manage_promotions'] %}yes{% endif %}">
+                Promotions:
+                {% if owner['can_manage_promotions'] %}Allowed{% else %}Disabled{% endif %}
+            </div>
+
+            <div class="permission {% if owner['can_manage_account'] %}yes{% endif %}">
+                Account:
+                {% if owner['can_manage_account'] %}Allowed{% else %}Disabled{% endif %}
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+</main>
+
+</body>
+</html>

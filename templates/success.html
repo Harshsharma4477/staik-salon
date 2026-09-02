@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Booking Received | {{ salon_name }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="container nav-inner">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            <span>✦</span>
+            {{ salon_name }}
+        </a>
+
+        <a
+            href="{{ url_for('home') }}"
+            class="nav-button"
+        >
+            Home
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="page-center">
+
+    <div class="message-card">
+
+        <div class="message-icon">
+            ✅
+        </div>
+
+        <h1>
+            Booking Received!
+        </h1>
+
+        <p>
+            Your appointment request has been
+            successfully submitted.
+        </p>
+
+
+        <div
+            style="
+                margin: 25px 0;
+                padding: 20px;
+                background: #f5f2ec;
+                border-radius: 14px;
+                text-align: left;
+            "
+        >
+
+            <p>
+                <strong>Booking ID:</strong>
+                #{{ booking["id"] }}
+            </p>
+
+            <p>
+                <strong>Name:</strong>
+                {{ booking["customer_name"] }}
+            </p>
+
+            <p>
+                <strong>Service:</strong>
+                {{ booking["service_name"] }}
+            </p>
+
+            <p>
+                <strong>Date:</strong>
+                {{ booking["booking_date"] }}
+            </p>
+
+            <p>
+                <strong>Time:</strong>
+                {{ booking["booking_time"] }}
+            </p>
+
+            <p>
+                <strong>Price:</strong>
+                {{ booking["price"]|money }}
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+                Pending confirmation
+            </p>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('home') }}"
+            class="primary-button"
+        >
+            Back to Website
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

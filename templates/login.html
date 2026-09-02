@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Owner Login | {{ salon_name }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="container nav-inner">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            <span>✦</span>
+            {{ salon_name }}
+        </a>
+
+        <a href="{{ url_for('home') }}" class="nav-button">
+            ← Back to Website
+        </a>
+
+    </div>
+</header>
+
+
+<div class="page-center">
+
+    <div class="message-card">
+
+        <div class="message-icon">
+            🔐
+        </div>
+
+        <h1>
+            Owner Login
+        </h1>
+
+        <p>
+            Sign in to manage appointments,
+            services and salon settings.
+        </p>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <form
+            action="{{ url_for('owner_login') }}"
+            method="POST"
+            style="margin-top: 25px; text-align: left;"
+        >
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="{{ csrf_token() }}"
+            >
+
+
+            <div class="form-group">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+                    required
+                    autocomplete="username"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter password"
+                    required
+                    autocomplete="current-password"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="primary-button full-width"
+            >
+                Login →
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

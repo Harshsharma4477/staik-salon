@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ code }} | {{ salon_name }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="container nav-inner">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            <span>✦</span>
+            {{ salon_name }}
+        </a>
+
+        <a
+            href="{{ url_for('home') }}"
+            class="nav-button"
+        >
+            Home
+        </a>
+
+    </div>
+
+</header>
+
+
+<div class="page-center">
+
+    <div class="message-card">
+
+        <div class="message-icon">
+            ⚠️
+        </div>
+
+        <h1>
+            {{ code }}
+        </h1>
+
+        <p>
+            {{ message }}
+        </p>
+
+        <a
+            href="{{ url_for('home') }}"
+            class="primary-button"
+        >
+            ← Back to Home
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ salon_name }} | Professional Salon</title>
+
+    <meta
+        name="description"
+        content="Book your salon appointment online with {{ salon_name }}."
+    >
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+    <div class="container nav-inner">
+
+        <a href="{{ url_for('home') }}" class="logo">
+            <span>✦</span>
+            {{ salon_name }}
+        </a>
+
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#services">Services</a>
+            <a href="#offers">Offers</a>
+            <a href="#booking">Book Now</a>
+            <a href="{{ url_for('shop') }}">Shop</a>
+            <a href="{{ url_for('track_order') }}">My Orders</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <a href="#booking" class="nav-button">
+            Book Appointment
+        </a>
+
+    </div>
+</header>
+
+
+<!-- ================= FLASH MESSAGES ================= -->
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+    {% if messages %}
+
+        <div class="flash-container">
+
+            {% for category, message in messages %}
+
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+{% endwith %}
+
+
+<!-- ================= HERO ================= -->
+
+<section id="home" class="hero">
+
+    <div class="container hero-grid">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                ✨ Premium Salon Experience
+            </div>
+
+            <h1>
+                Look good.
+                <span>Feel great.</span>
+            </h1>
+
+            <p>
+                Professional salon services with easy online
+                appointment booking.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#booking" class="primary-button">
+                    Book Appointment →
+                </a>
+
+                <a href="#services" class="secondary-button">
+                    Explore Services
+                </a>
+
+            </div>
+
+            <div class="hero-info">
+
+                <div>
+                    <strong>4+</strong>
+                    <small>Premium Services</small>
+                </div>
+
+                <div>
+                    <strong>Easy</strong>
+                    <small>Online Booking</small>
+                </div>
+
+                <div>
+                    <strong>Fast</strong>
+                    <small>Confirmation</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-card">
+
+            <div class="hero-card-icon">
+                ✂
+            </div>
+
+            <h3>
+                Your style,
+                <br>
+                your way.
+            </h3>
+
+            <p>
+                Choose your service, select a convenient
+                time and reserve your appointment.
+            </p>
+
+            <a href="#booking">
+                Reserve Your Slot →
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SERVICES ================= -->
+
+<section id="services" class="section">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+                <span class="section-label">
+                    OUR SERVICES
+                </span>
+
+                <h2>
+                    Everything you need
+                </h2>
+            </div>
+
+            <p>
+                Professional services designed to help
+                you look and feel your best.
+            </p>
+
+        </div>
+
+
+        <div class="services-grid">
+
+            {% for service in services %}
+
+            <article class="service-card">
+
+                <div class="service-icon">
+                    {% if loop.index == 1 %}
+                        ✂️
+                    {% elif loop.index == 2 %}
+                        💇
+                    {% elif loop.index == 3 %}
+                        🧖
+                    {% else %}
+                        ✨
+                    {% endif %}
+                </div>
+
+                <div class="service-number">
+                    0{{ loop.index }}
+                </div>
+
+                <h3>
+                    {{ service["name"] }}
+                </h3>
+
+                <p>
+                    {{ service["description"] }}
+                </p>
+
+                <div class="service-bottom">
+
+                    <div>
+                        <strong>
+                            {{ service["price"]|money }}
+                        </strong>
+
+                        <span>
+                            / session
+                        </span>
+                    </div>
+
+                    <span class="duration">
+                        {{ service["duration"] }} min
+                    </span>
+
+                </div>
+
+                <a
+                    href="#booking"
+                    class="service-link"
+                    data-service="{{ service['id'] }}"
+                >
+                    Book this service →
+                </a>
+
+            </article>
+
+            {% else %}
+
+            <div class="empty-state">
+                No services are available right now.
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= OFFERS ================= -->
+
+<section id="offers" class="offers-section">
+
+    <div class="container">
+
+        <div class="section-heading light">
+
+            <div>
+                <span class="section-label">
+                    SPECIAL OFFERS
+                </span>
+
+                <h2>
+                    Treat yourself
+                </h2>
+            </div>
+
+        </div>
+
+
+        <div class="offers-grid">
+
+            {% for promotion in promotions %}
+
+            <article class="offer-card">
+
+                <div class="offer-icon">
+                    🎁
+                </div>
+
+                <div>
+
+                    <h3>
+                        {{ promotion["title"] }}
+                    </h3>
+
+                    <p>
+                        {{ promotion["description"] }}
+                    </p>
+
+                    <strong>
+                        {{ promotion["discount"] }}
+                    </strong>
+
+                </div>
+
+            </article>
+
+            {% else %}
+
+            <div class="offer-empty">
+                <h3>New offers coming soon</h3>
+
+                <p>
+                    Check back soon for special salon
+                    promotions.
+                </p>
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= BOOKING ================= -->
+
+<section id="booking" class="section booking-section">
+
+    <div class="container booking-grid">
+
+        <div class="booking-info">
+
+            <span class="section-label">
+                ONLINE BOOKING
+            </span>
+
+            <h2>
+                Reserve your
+                <span>appointment.</span>
+            </h2>
+
+            <p>
+                Choose your service and preferred time.
+                Your booking will be sent to the salon
+                dashboard for confirmation.
+            </p>
+
+
+            <div class="booking-points">
+
+                <div>
+                    <span>✓</span>
+                    <div>
+                        <strong>Easy booking</strong>
+                        <small>
+                            Book your appointment in minutes.
+                        </small>
+                    </div>
+                </div>
+
+                <div>
+                    <span>✓</span>
+                    <div>
+                        <strong>Live slot checking</strong>
+                        <small>
+                            Already booked slots are removed.
+                        </small>
+                    </div>
+                </div>
+
+                <div>
+                    <span>✓</span>
+                    <div>
+                        <strong>Quick confirmation</strong>
+                        <small>
+                            Salon staff can confirm your booking.
+                        </small>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="booking-card">
+
+            <div class="booking-card-header">
+
+                <h3>
+                    Book Appointment
+                </h3>
+
+                <span>
+                    🔒 Secure
+                </span>
+
+            </div>
+
+
+            <form
+                action="{{ url_for('book') }}"
+                method="POST"
+                id="bookingForm"
+            >
+
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+
+                <div class="form-group">
+
+                    <label for="customer_name">
+                        Your Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="customer_name"
+                        name="customer_name"
+                        placeholder="Enter your name"
+                        required
+                        maxlength="100"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        Phone Number *
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter phone number"
+                        required
+                        maxlength="20"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="service_id">
+                        Select Service *
+                    </label>
+
+                    <select
+                        id="service_id"
+                        name="service_id"
+                        required
+                    >
+
+                        <option value="">
+                            Choose a service
+                        </option>
+
+                        {% for service in services %}
+
+                        <option value="{{ service['id'] }}">
+                            {{ service["name"] }}
+                            — {{ service["price"]|money }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="booking_date">
+                            Date *
+                        </label>
+
+                        <input
+                            type="date"
+                            id="booking_date"
+                            name="booking_date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="booking_time">
+                            Time *
+                        </label>
+
+                        <select
+                            id="booking_time"
+                            name="booking_time"
+                            required
+                            disabled
+                        >
+
+                            <option value="">
+                                Select date first
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="slot-message" id="slotMessage">
+                    Select a service and date to see available slots.
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="notes">
+                        Notes
+                    </label>
+
+                    <textarea
+                        id="notes"
+                        name="notes"
+                        rows="3"
+                        placeholder="Any special request? (optional)"
+                        maxlength="500"
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-button full-width"
+                    id="bookButton"
+                >
+                    Confirm Appointment →
+                </button>
+
+
+                <p class="form-note">
+                    By booking, you agree to provide accurate
+                    contact information.
+                </p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= ABOUT ================= -->
+
+<section class="about-section">
+
+    <div class="container about-grid">
+
+        <div class="about-box">
+
+            <span class="section-label">
+                ABOUT US
+            </span>
+
+            <h2>
+                A better salon
+                experience.
+            </h2>
+
+            <p>
+                {{ about }}
+            </p>
+
+            <a
+                href="{{ url_for('directions') }}"
+                target="_blank"
+                rel="noopener"
+                class="secondary-button"
+            >
+                📍 Get Directions
+            </a>
+
+        </div>
+
+
+        <div class="about-stats">
+
+            <div class="stat-box">
+                <strong>10 AM</strong>
+                <span>Opening Time</span>
+            </div>
+
+            <div class="stat-box">
+                <strong>8 PM</strong>
+                <span>Closing Time</span>
+            </div>
+
+            <div class="stat-box">
+                <strong>100%</strong>
+                <span>Easy Booking</span>
+            </div>
+
+            <div class="stat-box">
+                <strong>Online</strong>
+                <span>Appointment</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CONTACT ================= -->
+
+<section id="contact" class="contact-section">
+
+    <div class="container">
+
+        <div class="contact-card">
+
+            <div>
+
+                <span class="section-label">
+                    CONTACT
+                </span>
+
+                <h2>
+                    Ready for your
+                    next look?
+                </h2>
+
+                <p>
+                    Book online or visit us at the salon.
+                </p>
+
+            </div>
+
+
+            <div class="contact-details">
+
+                <div>
+                    <span>📍</span>
+
+                    <div>
+                        <small>Address</small>
+
+                        <strong>
+                            {{ address }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                {% if phone %}
+
+                <div>
+                    <span>📞</span>
+
+                    <div>
+                        <small>Phone</small>
+
+                        <strong>
+                            {{ phone }}
+                        </strong>
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+
+                <div>
+                    <span>🕐</span>
+
+                    <div>
+                        <small>Opening Hours</small>
+
+                        <strong>
+                            {{ opening_hours }}
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="container footer-inner">
+
+        <div>
+
+            <div class="logo footer-logo">
+                <span>✦</span>
+                {{ salon_name }}
+            </div>
+
+            <p>
+                Professional salon services
+                with easy online booking.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#services">
+                Services
+            </a>
+
+            <a href="#booking">
+                Book
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+            <a href="{{ url_for('owner_login') }}">
+                Owner Login
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="container copyright">
+
+        © {{ salon_name }}.
+        All rights reserved.
+
+    </div>
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const serviceSelect =
+    document.getElementById("service_id");
+
+const dateInput =
+    document.getElementById("booking_date");
+
+const timeSelect =
+    document.getElementById("booking_time");
+
+const slotMessage =
+    document.getElementById("slotMessage");
+
+const bookButton =
+    document.getElementById("bookButton");
+
+
+/* Minimum booking date = today */
+
+const today =
+    new Date().toISOString().split("T")[0];
+
+dateInput.min = today;
+
+
+/* Load available slots */
+
+async function loadSlots() {
+
+    const date = dateInput.value;
+    const service = serviceSelect.value;
+
+    timeSelect.innerHTML = "";
+
+    timeSelect.disabled = true;
+    bookButton.disabled = true;
+
+    if (!date || !service) {
+
+        timeSelect.innerHTML =
+            '<option value="">Select service and date</option>';
+
+        slotMessage.textContent =
+            "Select a service and date to see available slots.";
+
+        return;
+    }
+
+
+    slotMessage.textContent =
+        "Checking available slots...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/slots?date=${encodeURIComponent(date)}&service_id=${encodeURIComponent(service)}`
+            );
+
+
+        if (!response.ok) {
+            throw new Error("Unable to load slots.");
+        }
+
+
+        const data =
+            await response.json();
+
+
+        timeSelect.innerHTML =
+            '<option value="">Choose available time</option>';
+
+
+        if (!data.slots || data.slots.length === 0) {
+
+            timeSelect.disabled = true;
+
+            slotMessage.textContent =
+                "No slots are available for this date.";
+
+            return;
+        }
+
+
+        data.slots.forEach(slot => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = slot;
+
+            option.textContent =
+                formatTime(slot);
+
+            timeSelect.appendChild(option);
+
+        });
+
+
+        timeSelect.disabled = false;
+        bookButton.disabled = false;
+
+        slotMessage.textContent =
+            `${data.slots.length} time slots available.`;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        slotMessage.textContent =
+            "Could not load slots. Please try again.";
+
+    }
+
+}
+
+
+/* Convert 14:30 → 2:30 PM */
+
+function formatTime(time) {
+
+    const [hour, minute] =
+        time.split(":").map(Number);
+
+    const date =
+        new Date();
+
+    date.setHours(hour);
+    date.setMinutes(minute);
+
+    return date.toLocaleTimeString(
+        [],
+        {
+            hour: "numeric",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* Service/date changes */
+
+serviceSelect.addEventListener(
+    "change",
+    loadSlots
+);
+
+dateInput.addEventListener(
+    "change",
+    loadSlots
+);
+
+
+/* Select service from service card */
+
+document.querySelectorAll(
+    ".service-link"
+).forEach(link => {
+
+    link.addEventListener(
+        "click",
+        function() {
+
+            const serviceId =
+                this.dataset.service;
+
+            serviceSelect.value =
+                serviceId;
+
+            setTimeout(
+                loadSlots,
+                100
+            );
+
+        }
+    );
+
+});
+
+
+/* Smooth scrolling */
+
+document.querySelectorAll(
+    'a[href^="#"]'
+).forEach(anchor => {
+
+    anchor.addEventListener(
+        "click",
+        function(event) {
+
+            const target =
+                document.querySelector(
+                    this.getAttribute("href")
+                );
+
+            if (!target) return;
+
+            event.preventDefault();
+
+            target.scrollIntoView({
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+});
+
+</script>
+
+</body>
+</html>
