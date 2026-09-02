@@ -15,6 +15,7 @@ from flask import (
     render_template,
     request,
     session,
+    send_from_directory,
     url_for,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -32,6 +33,11 @@ DB_PATH = os.environ.get("DB_PATH", "staik_salon.db")
 OWNER_USERNAME = os.environ.get("OWNER_USERNAME", "admin")
 OWNER_PASSWORD = os.environ.get("OWNER_PASSWORD", "change-me-now")
 
+GOOGLE_VERIFICATION_FILE = "googledb5e95e36a911af6.html"
+
+@app.get(f"/{GOOGLE_VERIFICATION_FILE}")
+def google_verification():
+    return send_from_directory(app.static_folder, GOOGLE_VERIFICATION_FILE)
 
 # ---------------------------------------------------------
 # DATABASE
