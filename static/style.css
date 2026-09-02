@@ -1166,3 +1166,4 @@ button, input, textarea, select { max-width: 100%; }
   .order h2 { font-size: 21px; line-height: 1.35; }
   .item { gap: 10px; }
 }
+`r`n.brand-logo{height:42px;width:auto;display:block;object-fit:contain}.brand{display:flex;align-items:center}.brand-logo{max-width:180px}@media(max-width:600px){.brand-logo{height:36px;max-width:150px}}
