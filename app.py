@@ -352,6 +352,16 @@ def money_filter(value):
 # PUBLIC WEBSITE
 # ---------------------------------------------------------
 
+@app.route("/sitemap.xml")
+def sitemap():
+    return """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://staik-salon-1.onrender.com/</loc>
+    </url>
+</urlset>
+"""
+
 @app.route("/")
 def home():
     db = get_db()
